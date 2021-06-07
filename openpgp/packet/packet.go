@@ -16,7 +16,6 @@ import (
 	"math/big"
 	"math/bits"
 
-	"golang.org/x/crypto/cast5"
 	"golang.org/x/crypto/openpgp/errors"
 )
 
@@ -487,7 +486,7 @@ func (cipher CipherFunction) KeySize() int {
 	case Cipher3DES:
 		return 24
 	case CipherCAST5:
-		return cast5.KeySize
+		panic("cast5 cipher not available")
 	case CipherAES128:
 		return 16
 	case CipherAES192:
@@ -517,7 +516,7 @@ func (cipher CipherFunction) new(key []byte) (block cipher.Block) {
 	case Cipher3DES:
 		block, _ = des.NewTripleDESCipher(key)
 	case CipherCAST5:
-		block, _ = cast5.NewCipher(key)
+		panic("cast5 cipher not available")
 	case CipherAES128, CipherAES192, CipherAES256:
 		block, _ = aes.NewCipher(key)
 	}

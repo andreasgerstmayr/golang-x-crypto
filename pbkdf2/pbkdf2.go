@@ -21,6 +21,8 @@ package pbkdf2 // import "golang.org/x/crypto/pbkdf2"
 import (
 	"crypto/hmac"
 	"hash"
+
+	"golang.org/x/crypto/internal/boring"
 )
 
 // Key derives a key from the password, salt and iteration count, returning a
@@ -40,6 +42,10 @@ import (
 // Using a higher iteration count will increase the cost of an exhaustive
 // search but will also make derivation proportionally slower.
 func Key(password, salt []byte, iter, keyLen int, h func() hash.Hash) []byte {
+	if boring.Enabled() {
+		return boring.Pbkdf2Key(password, salt, iter, keyLen, h)
+	}
+
 	prf := hmac.New(h, password)
 	hashLen := prf.Size()
 	numBlocks := (keyLen + hashLen - 1) / hashLen
